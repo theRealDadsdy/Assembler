@@ -1,15 +1,27 @@
 <body onkeydown="keypress(event)">
+  <button onclick=hide id='hide'>-</button>
   <div class="numtext">
     <div class="line-numbers"></div>
     <textarea></textarea>
     <script>
       const textarea = document.querySelector('textarea')
       const lineNumbers = document.querySelector('.line-numbers')
+      const hideButton = document.querySelector('#hide')
+      const div = document.querySelector('.numtext')
       textarea.addEventListener('keyup', event => {
         const numberOfLines = event.target.value.split('\n').length
         lineNumbers.innerHTML = Array(numberOfLines)
           .fill('<span></span>')
           .join('')
+      })
+      hideButton.addEventListener('click', event => {    
+	      const div = document.querySelector('.numtext')
+      	if (div.style.display=="none"){
+        	div.style.display="";
+        }
+        else{
+        	div.style.display="none";
+        }
       })
       textarea.addEventListener('keydown', event => {
         if (event.key === 'Tab') {
