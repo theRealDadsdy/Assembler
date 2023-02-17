@@ -1,0 +1,178 @@
+<body onkeydown="keypress(event)">
+<textarea></textarea>
+<button onclick="run()">Run</button>
+<br>
+<button onclick="mem[1001]=1-memo(1001);">UI button 1</button>
+<button onclick="mem[1002]=1-memo(1002);">UI button 2</button>
+<br>
+<p></p>
+<script>
+	function keypress(event){
+  	let key = event.key;
+    mem[1000] = encode.indexOf(key)
+  }
+  let encode = "_0123456789abcdefghijklmenopqrstuvwxyz";
+  let A = 0;
+  let D = 0;
+  let mem = [];
+	function memo(num){
+  	if (num in mem){
+    	return mem[num]
+    }
+    else{
+    	return 0
+    }
+  }
+  let loc = 0;
+	let prev = 0;
+  function run() {
+    A = 0;
+    D = 0;
+    loc = 0;
+    mem = [];
+    let p = document.querySelector("p");
+   	p.textContent += "-----------------\r\n";
+    let string = document.querySelector("textarea").value;
+    let commands = string.split('\n');
+    clearTimeout(prev);
+    function cont() {
+    	command = commands[loc];
+      loc++;
+      parse(command.split(' '));
+      if (loc < commands.length){
+      	prev = setTimeout(cont,10)
+      }
+    }
+    cont()
+  }
+
+  function parse(command, high=false) {
+  	if (command.length === 1){
+    	command = command[0];
+    }
+  	if (command === "A"){
+    	return A
+    }
+    if (command === "D"){
+    	return D
+    }
+    if (command === "*A"){
+    	return memo(A)
+    }
+    if (command === "CLEAR"){
+      let p = document.querySelector("p");
+    	p.textContent = "";
+    	return;
+    }
+    if (typeof command !== typeof [1] && !isNaN(parseInt(command))){
+    	if (parseInt(command)==0 || parseInt(command)==1 || high){
+    		return parseInt(command)
+      }
+    }
+    if (command.includes("SAYTEXT")){
+      let i = command.indexOf("SAYTEXT");
+    	alert(command[i+1])
+      return;
+    }
+    if (command.includes("LOGTEXT")){
+      let i = command.indexOf("LOGTEXT");
+      let p = document.querySelector("p");
+    	p.textContent += command[i+1];
+      if (command.length > i+2 && command[i+2]=="SPACE"){
+      	p.textContent += " ";
+      } else if(command.length <= i+2 || command[i+2]!="NONE"){
+      	p.textContent += "\r\n"
+      }
+      return;
+    }
+    if (command.includes("SAY")){
+      let i = command.indexOf("SAY");
+    	alert(parse(command[i+1]))
+      return;
+    }
+    if (command.includes("LOG")){
+      let i = command.indexOf("LOG");
+      let p = document.querySelector("p");
+    	p.textContent += parse(command[i+1]);
+      if (command.length > i+2 && command[i+2]=="SPACE"){
+      	p.textContent += " ";
+      } else if(command.length <= i+2 || command[i+2]!="NONE"){
+      	p.textContent += "\r\n"
+      }
+      return;
+    }
+    if (command.includes("=")) {
+      let i = command.indexOf("=");
+      if (command[i - 1] === "A") {
+        A = parse(command.slice(i + 1), true);
+      } else if (command[i - 1] === "D") {
+        D = parse(command.slice(i + 1));
+      } else if (command[i - 1] === "*A") {
+        mem[A] = parse(command.slice(i + 1));
+      }
+      return;
+    }
+    if (command.includes("+")){
+    	let i = command.indexOf("+");
+      return parse(command[i-1]) + parse(command[i+1]);
+    }
+    if (command.includes("-")){
+    	let i = command.indexOf("-");
+      return parse(command[i-1]) - parse(command[i+1]);
+    }
+    if (command.includes("JMP")){
+    	loc = A;
+      return;
+    }
+    if (command.includes("JLT")){
+    	let i = command.indexOf("JLT")
+    	if (parse(command.slice(0,i))<0){
+      	loc = A;
+      }
+      return;
+    }
+    if (command.includes("JGT")){
+    	let i = command.indexOf("JGT")
+    	if (parse(command.slice(0,i))>0){
+      	loc = A;
+      }
+      return;
+    }
+    if (command.includes("JLE")){
+    	let i = command.indexOf("JLE")
+    	if (parse(command.slice(0,i))<=0){
+      	loc = A;
+      }
+      return;
+    }
+    if (command.includes("JGE")){
+    	let i = command.indexOf("JGE")
+    	if (parse(command.slice(0,i))>=0){
+      	loc = A;
+      }
+      return;
+    }
+    
+    if (command.includes("JNE")){
+    	let i = command.indexOf("JNE")
+    	if (parse(command.slice(0,i))!=0){
+      	loc = A;
+      }
+      return;
+    }
+    if (command.includes("JEQ")){
+    	let i = command.indexOf("JEQ")
+    	if (parse(command.slice(0,i))==0){
+      	loc = A;
+      }
+      return;
+    }
+  }
+
+</script>
+<style>
+p {
+    white-space: pre-line;
+}
+</style>
+</body>
