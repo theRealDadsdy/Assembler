@@ -1,4 +1,8 @@
 <body onkeydown="keypress(event)">
+  <button onclick="debugs.forEach(hideBug);run()">Run</button>
+  <button onclick="debugs.forEach(showBug);run(true)">Debug</button>
+  <button class="debug" onclick="cont(false)">Tick</button>
+  <br>
   <button onclick=hide id='hide'>-</button>
   <div class="numtext">
     <div class="line-numbers"></div>
@@ -36,46 +40,44 @@
     </script>
   </div>
   <br>
-  <button onclick="debugs.forEach(hideBug);run()">Run</button>
-  <button onclick="debugs.forEach(showBug);run(true)">Debug</button>
-  <button class="debug" onclick="cont(false)">Tick</button>
-  <br>
   <button onclick="mem[1001]=1-memo(1001);">UI button 1</button>
   <button onclick="mem[1002]=1-memo(1002);">UI button 2</button>
   <br>
   <p></p>
   <table class="debug">
-  <tr>
-  </tr>
+    <tr>
+    </tr>
   </table>
   <script>
     let debug = false;
     let lineNums;
-    function lineUpdate(elem, index){
-    	elem.classList.remove('highlight');
-      if (debug && index==loc){
-      	elem.classList.add('highlight');
+
+    function lineUpdate(elem, index) {
+      elem.classList.remove('highlight');
+      if (debug && index == loc) {
+        elem.classList.add('highlight');
       }
     }
+
     function updateTable() {
-    	lineNums = Array.from(lineNumbers.children);
-    	lineNums.forEach(lineUpdate);
-    	let table = document.querySelector("table").children[0];
+      lineNums = Array.from(lineNumbers.children);
+      lineNums.forEach(lineUpdate);
+      let table = document.querySelector("table").children[0];
       table.innerHTML = '';
-      let tableArray = ["A", A, "D", D,"INS",loc,"MEM","VAL"];
-      for (let m in mem){
-      	if (m<1000){
-      		tableArray.push(m);
-        	tableArray.push(mem[m]);
+      let tableArray = ["A", A, "D", D, "INS", loc, "MEM", "VAL"];
+      for (let m in mem) {
+        if (m < 1000) {
+          tableArray.push(m);
+          tableArray.push(mem[m]);
         }
       }
-      for (let i in tableArray){
-      	if (i%2 == 0){
-        	let row = document.createElement('tr');
-        	table.appendChild(row);
+      for (let i in tableArray) {
+        if (i % 2 == 0) {
+          let row = document.createElement('tr');
+          table.appendChild(row);
         }
         let slot = document.createElement('td');
-        table.children[(i-i%2)/2].appendChild(slot);
+        table.children[(i - i % 2) / 2].appendChild(slot);
         slot.textContent = tableArray[i];
       }
     }
@@ -90,7 +92,7 @@
       elem.style.display = '';
       debug = true;
     }
-    
+
     debugs.forEach(hideBug);
 
     function keypress(event) {
@@ -119,15 +121,15 @@
       loc++;
       if (command[0] != "#") {
         parse(command.split(' '));
-        updateTable()
       }
+      updateTable()
       if (loc < commands.length && go) {
         prev = setTimeout(cont, 10)
       }
     }
-		
+
     updateTable();
-    
+
     function run(debug) {
       A = 0;
       D = 0;
@@ -323,23 +325,26 @@
       display: block;
       color: #506882;
     }
-    .highlight{
+
+    .highlight {
       background: yellow !important;
     }
-      table {
-        position: absolute;
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        right: 0%;
-        top: 0%
-      }
 
-      td {
-        border: 3px solid black;
-        text-align: center;
-        padding: 8px;
-        width: 40px;
-        height: 10px;
-      }
+    table {
+      position: fixed;
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      right: 0%;
+      top: 0%
+    }
+
+    td {
+      border: 3px solid black;
+      text-align: center;
+      padding: 8px;
+      width: 40px;
+      height: 10px;
+    }
+
   </style>
 </body>
