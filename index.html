@@ -62,6 +62,7 @@
     }
     let loc = 0;
     let prev = 0;
+    let anchors = [];
 
     function run() {
       A = 0;
@@ -73,11 +74,24 @@
       let string = document.querySelector("textarea").value;
       let commands = string.split('\n');
       clearTimeout(prev);
+      anchors = {};
+      for (let i in commands){
+      	let command = commands[i].split(' ');
+      	if (command[0]==='#'){
+        	if (command.length==2){
+          	anchors[command[1]] = i;
+          } else if (command.length==3){
+          	anchors[command[1]] = command[2];
+          }
+        }
+      }
 
       function cont() {
         command = commands[loc];
         loc++;
-        parse(command.split(' '));
+        if (command[0]!="#"){
+        	parse(command.split(' '));
+        }
         if (loc < commands.length) {
           prev = setTimeout(cont, 10)
         }
@@ -205,6 +219,9 @@
           loc = A;
         }
         return;
+      }
+      if (Object.keys(anchors).includes(command) && high){
+      	return anchors[command];
       }
     }
 
