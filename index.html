@@ -14,13 +14,12 @@
           .fill('<span></span>')
           .join('')
       })
-      hideButton.addEventListener('click', event => {    
-	      const div = document.querySelector('.numtext')
-      	if (div.style.display=="none"){
-        	div.style.display="";
-        }
-        else{
-        	div.style.display="none";
+      hideButton.addEventListener('click', event => {
+        const div = document.querySelector('.numtext')
+        if (div.style.display == "none") {
+          div.style.display = "";
+        } else {
+          div.style.display = "none";
         }
       })
       textarea.addEventListener('keydown', event => {
@@ -37,13 +36,63 @@
     </script>
   </div>
   <br>
-  <button onclick="run()">Run</button>
+  <button onclick="debugs.forEach(hideBug);run()">Run</button>
+  <button onclick="debugs.forEach(showBug);run(true)">Debug</button>
+  <button class="debug" onclick="cont(false)">Tick</button>
   <br>
   <button onclick="mem[1001]=1-memo(1001);">UI button 1</button>
   <button onclick="mem[1002]=1-memo(1002);">UI button 2</button>
   <br>
   <p></p>
+  <table class="debug">
+  <tr>
+  </tr>
+  </table>
   <script>
+    let debug = false;
+    let lineNums;
+    function lineUpdate(elem, index){
+    	elem.classList.remove('highlight');
+      if (debug && index==loc){
+      	elem.classList.add('highlight');
+      }
+    }
+    function updateTable() {
+    	lineNums = Array.from(lineNumbers.children);
+    	lineNums.forEach(lineUpdate);
+    	let table = document.querySelector("table").children[0];
+      table.innerHTML = '';
+      let tableArray = ["A", A, "D", D,"INS",loc,"MEM","VAL"];
+      for (let m in mem){
+      	if (m<1000){
+      		tableArray.push(m);
+        	tableArray.push(mem[m]);
+        }
+      }
+      for (let i in tableArray){
+      	if (i%2 == 0){
+        	let row = document.createElement('tr');
+        	table.appendChild(row);
+        }
+        let slot = document.createElement('td');
+        table.children[(i-i%2)/2].appendChild(slot);
+        slot.textContent = tableArray[i];
+      }
+    }
+    let debugs = Array.from(document.getElementsByClassName("debug"));
+
+    function hideBug(elem) {
+      elem.style.display = 'none';
+      debug = false;
+    }
+
+    function showBug(elem) {
+      elem.style.display = '';
+      debug = true;
+    }
+    
+    debugs.forEach(hideBug);
+
     function keypress(event) {
       let key = event.key;
       mem[1000] = encode.indexOf(key)
@@ -63,40 +112,48 @@
     let loc = 0;
     let prev = 0;
     let anchors = [];
+    let commands = [];
 
-    function run() {
+    function cont(go = true) {
+      command = commands[loc];
+      loc++;
+      if (command[0] != "#") {
+        parse(command.split(' '));
+        updateTable()
+      }
+      if (loc < commands.length && go) {
+        prev = setTimeout(cont, 10)
+      }
+    }
+		
+    updateTable();
+    
+    function run(debug) {
       A = 0;
       D = 0;
       loc = 0;
       mem = [];
+      updateTable();
       let p = document.querySelector("p");
       p.textContent += "-----------------\r\n";
       let string = document.querySelector("textarea").value;
-      let commands = string.split('\n');
+      commands = string.split('\n');
       clearTimeout(prev);
       anchors = {};
-      for (let i in commands){
-      	let command = commands[i].split(' ');
-      	if (command[0]==='#'){
-        	if (command.length==2){
-          	anchors[command[1]] = i;
-          } else if (command.length==3){
-          	anchors[command[1]] = command[2];
+      for (let i in commands) {
+        let command = commands[i].split(' ');
+        if (command[0] === '#') {
+          if (command.length == 2) {
+            anchors[command[1]] = i;
+          } else if (command.length == 3) {
+            anchors[command[1]] = command[2];
           }
         }
       }
 
-      function cont() {
-        command = commands[loc];
-        loc++;
-        if (command[0]!="#"){
-        	parse(command.split(' '));
-        }
-        if (loc < commands.length) {
-          prev = setTimeout(cont, 10)
-        }
+      if (!debug) {
+        cont()
       }
-      cont()
     }
 
     function parse(command, high = false) {
@@ -220,8 +277,8 @@
         }
         return;
       }
-      if (Object.keys(anchors).includes(command) && high){
-      	return anchors[command];
+      if (Object.keys(anchors).includes(command) && high) {
+        return anchors[command];
       }
     }
 
@@ -266,6 +323,23 @@
       display: block;
       color: #506882;
     }
+    .highlight{
+      background: yellow !important;
+    }
+      table {
+        position: absolute;
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        right: 0%;
+        top: 0%
+      }
 
+      td {
+        border: 3px solid black;
+        text-align: center;
+        padding: 8px;
+        width: 40px;
+        height: 10px;
+      }
   </style>
 </body>
