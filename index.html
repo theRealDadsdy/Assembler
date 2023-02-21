@@ -99,7 +99,7 @@
       let key = event.key;
       mem[1000] = encode.indexOf(key)
     }
-    let encode = "_0123456789abcdefghijklmenopqrstuvwxyz";
+    let encode = "_0123456789abcdefghijklmnopqrstuvwxyz";
     let A = 0;
     let D = 0;
     let mem = [];
@@ -126,6 +126,10 @@
       if (loc < commands.length && go) {
         prev = setTimeout(cont, 10)
       }
+      else if (loc == commands.length){
+	      let p = document.querySelector("p");
+  	    p.textContent += "-----------------\r\n";
+      }
     }
 
     updateTable();
@@ -136,8 +140,6 @@
       loc = 0;
       mem = [];
       updateTable();
-      let p = document.querySelector("p");
-      p.textContent += "-----------------\r\n";
       let string = document.querySelector("textarea").value;
       commands = string.split('\n');
       clearTimeout(prev);
@@ -180,6 +182,22 @@
         if (parseInt(command) == 0 || parseInt(command) == 1 || high) {
           return parseInt(command)
         }
+      }
+      if (command.includes("SAYDIGIT")) {
+        let i = command.indexOf("SAYDIGIT");
+        alert(encode.charAt(parse(command[i + 1])+1))
+        return;
+      }
+      if (command.includes("LOGDIGIT")) {
+        let i = command.indexOf("LOGDIGIT");
+        let p = document.querySelector("p");
+        p.textContent += encode.charAt(parse(command[i + 1])+1);
+        if (command.length > i + 2 && command[i + 2] == "SPACE") {
+          p.textContent += " ";
+        } else if (command.length <= i + 2 || command[i + 2] != "NONE") {
+          p.textContent += "\r\n"
+        }
+        return;
       }
       if (command.includes("SAYTEXT")) {
         let i = command.indexOf("SAYTEXT");
