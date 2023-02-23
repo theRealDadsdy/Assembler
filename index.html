@@ -40,8 +40,8 @@
     </script>
   </div>
   <br>
-  <button onclick="mem[1001]=1-memo(1001);">UI button 1</button>
-  <button onclick="mem[1002]=1-memo(1002);">UI button 2</button>
+  <button onclick="mem[1001]=1;">UI button 1</button>
+  <button onclick="mem[1002]=1;">UI button 2</button>
   <br>
   <p></p>
   <table class="debug">
@@ -99,7 +99,7 @@
       let key = event.key;
       mem[1000] = encode.indexOf(key)
     }
-    let encode = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.'";
+    let encode = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.' Backspace";
     let A = 0;
     let D = 0;
     let mem = [];
