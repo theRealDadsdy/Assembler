@@ -119,6 +119,13 @@
     function cont(go = true) {
       command = commands[loc];
       loc++;
+      let d = new Date()
+      mem[2000]=d.getSeconds();
+      mem[2001]=d.getMinutes();
+      mem[2002]=d.getHours();
+      mem[2003]=d.getDate();
+      mem[2004]=d.getMonth();
+      mem[2005]=d.getYear();
       if (command[0] != "#") {
         parse(command.split(' '));
       }
