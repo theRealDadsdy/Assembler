@@ -186,6 +186,9 @@
       if (command === "*A") {
         return memo(A)
       }
+      if (command === "LN" && high) {
+        return loc
+      }
       if (command === "CLEAR") {
         let p = document.querySelector("p");
         p.textContent = "";
