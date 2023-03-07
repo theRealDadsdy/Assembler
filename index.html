@@ -327,13 +327,13 @@
       if (Object.keys(anchors).includes(command[0])) {
       	let next = anchors[command[0]].join('\n');
         if (command.length>=2){
-        	next = next.replace(/arg1/g,command[1])
+        	next = next.replace(/arg1/g,parse(command[1],high))
         }
         if (command.length>=3){
-        	next = next.replace(/arg2/g,command[2])
+        	next = next.replace(/arg2/g,parse(command[2],high))
         }
         if (command.length>=4){
-        	next = next.replace(/arg3/g,command[3])
+        	next = next.replace(/arg3/g,parse(command[3],high))
         }
         return parse(next.split("\n"), high);
       }
