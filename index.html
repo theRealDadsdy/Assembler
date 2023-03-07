@@ -316,6 +316,19 @@
       if (Object.keys(anchors).includes(command)) {
         return parse(anchors[command], high);
       }
+      if (Object.keys(anchors).includes(command[0])) {
+      	let next = anchors[command[0]].join('\n');
+        if (command.length>=2){
+        	next = next.replace(/arg1/g,command[1])
+        }
+        if (command.length>=3){
+        	next = next.replace(/arg2/g,command[2])
+        }
+        if (command.length>=4){
+        	next = next.replace(/arg3/g,command[3])
+        }
+        return parse(next.split("\n"), high);
+      }
     }
 
   </script>
