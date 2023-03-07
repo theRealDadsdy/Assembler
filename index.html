@@ -266,6 +266,14 @@
         let i = command.indexOf("-");
         return parse(command[i - 1]) - parse(command[i + 1]);
       }
+      if (command.includes("&")) {
+        let i = command.indexOf("&");
+        return parse(command[i - 1]) & parse(command[i + 1]);
+      }
+      if (command.includes("|")) {
+        let i = command.indexOf("|");
+        return parse(command[i - 1]) | parse(command[i + 1]);
+      }
       if (command.includes("JMP")) {
         loc = A;
         return;
